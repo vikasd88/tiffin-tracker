@@ -1,6 +1,9 @@
-# My Tiffin Tracker
+# My Tiffin Tracker — Customer + Provider Management
 
-A personal, responsive React + TypeScript app for tracking homemade lunch and dinner orders, absences, monthly bills and payments. All records are saved in browser `localStorage`; there is no backend, authentication, or external database.
+A responsive React + TypeScript app with two workspaces. The Provider workspace uses Supabase Auth and a shared PostgreSQL database; the Customer Tracker remains browser-local:
+
+- **Customer Tracker:** the original personal meal calendar, absences, monthly bill, payments, settings, JSON backup/restore, PWA and WhatsApp helper.
+- **Tiffin Provider:** manage multiple customers, delivery addresses, regular lunch/dinner preferences, daily orders, delivery status, customer-wise monthly bills, payments, meal pricing, and JSON backup/restore. WhatsApp functionality is intentionally not included in Provider mode for this first version.
 
 ## Run locally
 
@@ -18,21 +21,33 @@ npm run build
 npm run preview
 ```
 
-## Features
+## Provider workflow
 
-- Dashboard with monthly totals and today's lunch/dinner status
-- Independent Lunch and Dinner selection: Mini Meal, Full Meal, or No Order
-- Monthly calendar and date-wise meal editing
-- Out-of-station date ranges applied to lunch, dinner, or both
-- Configurable rates; each order stores its own charged price
-- Monthly bill, CSV export, print-friendly statement and month finalization/unlocking
-- Payment history with partial payments and billing-month allocation
-- JSON backup/restore with structure validation and replacement confirmation
-- Optional September 2026 demo data, and a separate clear-demo action
-- Asia/Kolkata date formatting and date-only `YYYY-MM-DD` meal keys
+1. Choose **Tiffin Provider** at startup.
+2. Add customers with contact details, delivery address, and their regular lunch/dinner plan.
+3. Open **Daily Register**, choose the date and Lunch or Dinner, and use **Load regular orders**. This adds only missing orders for active customers; it does not overwrite an existing order.
+4. Adjust each customer's meal, quantity, and delivery status (Pending, Preparing, Dispatched, Delivered).
+5. Open **Monthly Bills** to review each customer's charges, payments, and outstanding balance. Record partial payments against the selected billing month.
+6. Open **Settings & backups** and export a JSON backup regularly. Importing a backup replaces the provider data in the signed-in Supabase account.
 
-## Notes
+Default meal prices are configurable. Each order stores its unit price, so changing a default price does not change historical charges. `No Order` entries are not billed.
 
-- Browser storage is device/browser-specific. Export JSON backups regularly.
-- An absence confirmation removes existing orders in the selected slots/range so those slots cannot be charged twice.
-- “No Order” is represented as a non-chargeable slot; it is not stored as a billable meal.
+## Supabase data and Vercel deployment
+
+The **Tiffin Provider** workspace uses Supabase Auth and four database tables (`provider_settings`, `provider_customers`, `provider_orders`, `provider_payments`) with Row Level Security. Signed-in provider records are shared across browsers that sign in to the same account. Use **Refresh data** to fetch changes made in another browser while the app is already open.
+
+Setup guide: [`SUPABASE_SETUP.md`](./SUPABASE_SETUP.md). SQL schema and policies: [`supabase/schema.sql`](./supabase/schema.sql) and [`supabase/migrations/202610240001_provider_cloud.sql`](./supabase/migrations/202610240001_provider_cloud.sql).
+
+For local development, copy `.env.example` to `.env.local`, fill in the Supabase Project URL and publishable key, then run `npm install` and `npm run dev`. For Vercel, add the same two variables in **Project Settings → Environment Variables** and redeploy. Do not expose a service-role key or database password in frontend code.
+
+Before replacing a previous local-only provider version, export its JSON backup. After signing in to the Supabase version, import that backup from **Settings & backups**. Import replaces the records in the currently signed-in provider account, so back up first.
+
+The existing **Customer Tracker** remains local to each browser and is not synchronized by Supabase in this version. The provider workspace is synchronized to Supabase.
+
+## PWA
+
+The service worker is registered for production builds. To test installation, deploy over HTTPS (or use `localhost`) and choose **Install app** or **Add to Home screen** in the browser. The Customer Tracker continues to use local browser storage; Provider records are fetched from Supabase after sign-in.
+
+## Privacy note
+
+The Provider workspace requires Supabase sign-in and uses RLS policies so a signed-in account can access only its own provider records. The Customer Tracker workspace is still stored in local browser storage and has no account-level sync. Keep your sign-in credentials private and export periodic JSON backups of provider data.
