@@ -51,3 +51,7 @@ The service worker is registered for production builds. To test installation, de
 ## Privacy note
 
 The Provider workspace requires Supabase sign-in and uses RLS policies so a signed-in account can access only its own provider records. The Customer Tracker workspace is still stored in local browser storage and has no account-level sync. Keep your sign-in credentials private and export periodic JSON backups of provider data.
+
+## Provider-only release
+
+This build opens directly into the Tiffin Provider sign-in/workspace. The Customer Tracker remains in the source code but its workspace selector and navigation entry are hidden for now. To restore both modes later, restore the previous `App.tsx`, `ProviderGate.tsx`, and `ProviderApp.tsx` mode-selection/navigation code.
