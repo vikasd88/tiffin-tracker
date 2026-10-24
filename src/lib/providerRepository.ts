@@ -6,10 +6,12 @@ type Order = ProviderData['orders'][number];
 type Payment = ProviderData['payments'][number];
 
 const defaultPrices: ProviderData['prices'] = {
-  miniLunch: 70,
-  miniDinner: 70,
-  fullLunch: 100,
-  fullDinner: 100,
+  miniLunch: 4000 / 30 / 2,
+  miniDinner: 4000 / 30 / 2,
+  fullLunch: 5000 / 30 / 2,
+  fullDinner: 5000 / 30 / 2,
+  miniMonthly: 4000,
+  fullMonthly: 5000,
 };
 
 function client() {

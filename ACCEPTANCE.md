@@ -26,3 +26,10 @@
 ## Build status
 - TypeScript/TSX transpile syntax checks passed for the edited source files.
 - A full `npm run build`, live Supabase query test, and browser end-to-end tests were not completed in this environment because `npm install` timed out. Complete these checks after installing dependencies and adding your Supabase credentials.
+
+## Daily attendance and monthly pricing
+- [ ] Daily Register supports date selection, Lunch/Dinner selection, and All / Not marked / Taken / Not available filters.
+- [ ] Marking Taken creates a chargeable order at half of the monthly plan rate divided by the selected month's actual calendar days.
+- [ ] Marking Not available records a zero-charge entry; switching back to Not marked removes the attendance entry.
+- [ ] Monthly bills count only chargeable Taken orders and subtract recorded payments.
+- [ ] Settings expose Mini Meal and Full Meal monthly rates, defaulting to ₹4,000 and ₹5,000.

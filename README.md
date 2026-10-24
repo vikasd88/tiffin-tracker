@@ -52,6 +52,9 @@ The service worker is registered for production builds. To test installation, de
 
 The Provider workspace requires Supabase sign-in and uses RLS policies so a signed-in account can access only its own provider records. The Customer Tracker workspace is still stored in local browser storage and has no account-level sync. Keep your sign-in credentials private and export periodic JSON backups of provider data.
 
-## Provider-only release
+## Daily meal attendance and monthly billing
 
-This build opens directly into the Tiffin Provider sign-in/workspace. The Customer Tracker remains in the source code but its workspace selector and navigation entry are hidden for now. To restore both modes later, restore the previous `App.tsx`, `ProviderGate.tsx`, and `ProviderApp.tsx` mode-selection/navigation code.
+- In **Daily Register**, choose a date and Lunch or Dinner, then mark each customer as **Taken**, **Not available**, or leave it **Not marked**.
+- **Taken** records a chargeable meal using that customer's regular lunch/dinner plan. **Not available** records no charge. **Not marked** remains pending and is not charged.
+- Monthly plan defaults are Mini Meal ₹4,000 and Full Meal ₹5,000, covering both lunch and dinner. The per-meal charge is `monthly plan price / calendar days in that month / 2`; calculations retain precision until the displayed total is rounded.
+- Configure monthly prices under **Settings**. Existing orders keep the price saved on the order; newly recorded or updated orders use the current monthly price settings.
